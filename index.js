@@ -12,12 +12,21 @@ const authRoutes = require('./Routes/auth');
 const bookRoutes = require('./Routes/books');   
 const transactionRoutes = require('./Routes/transactions');
 
-const frontendURL = 'https://ayomideabikoye.github.io/Acity-Digital-Library-Frontend'; 
+const allowedOrigins = [
+    'https://ayomideabikoye.github.io', 
+    'https://ayomideabikoye.github.io/Acity-Digital-Library-Frontend'
+];
 
-server.use(cors({
-    origin: frontendURL,
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests from the defined origins or requests with no origin (like internal servers)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'), false);
+        }
+    },
 }));
-server.use(express.json()); 
 
 // Sample route to test if server is running
 server.get('/', (req, res) => {
