@@ -3,10 +3,10 @@ const router = express.Router();
 const pool = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { authenticateToken } = require('../middleware');
 
 router.post('/register', async (req, res) => {
   try {
-    // 1. DEBUG LOG: Print what data the server received
     console.log('-------------------------------------------');
     console.log('📩 Register request received!');
     console.log('Data:', req.body); 
@@ -71,4 +71,28 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.put('/password', authenticateToken, async (req, res) => {
+    const userId = req.user.user_id; 
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+        return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        
+        await pool.query(
+            'UPDATE users SET password_hash = $1 WHERE user_id = $2',
+            [hashedPassword, userId]
+        );
+
+        console.log(`Password successfully updated for User ID: ${userId}`);
+        res.json({ message: 'Password updated successfully. You will need to log in again.' });
+
+    } catch (err) {
+        console.error('Password Update Error:', err);
+        res.status(500).json({ error: 'Server error during password update.' });
+    }
+});
 module.exports = router;
