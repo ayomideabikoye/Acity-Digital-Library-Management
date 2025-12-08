@@ -12,7 +12,7 @@ const authRoutes = require('./Routes/auth');
 const bookRoutes = require('./Routes/books');   
 const transactionRoutes = require('./Routes/transactions');
 
-const frontendURL = 'https://yourusername.github.io/your-repo-name'; 
+const frontendURL = 'https://ayomideabikoye.github.io/Acity-Digital-Library-Frontend'; 
 
 app.use(cors({
     origin: frontendURL,
