@@ -19,7 +19,6 @@ const allowedOrigins = [
 
 server.use(cors({
     origin: function (origin, callback) {
-        // Allow requests from the defined origins or requests with no origin (like internal servers)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
