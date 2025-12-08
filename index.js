@@ -1,4 +1,4 @@
- const express = require('express');
+const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
@@ -38,6 +38,20 @@ server.get('/', (req, res) => {
 server.use('/api/auth', authRoutes);
 server.use('/api/books', bookRoutes);
 server.use('/api/transactions', transactionRoutes);    
+
+server.use((req, res, next) => {
+    res.status(404).json({ error: 'Not Found: The requested API endpoint does not exist.' });
+});
+
+server.use((err, req, res, next) => {
+    console.error(err.stack);
+    const status = err.status || 500;
+    const message = err.message || 'Internal Server Error';
+    res.status(status).json({
+        error: message
+    });
+});
+
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
