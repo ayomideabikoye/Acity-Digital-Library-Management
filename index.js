@@ -27,7 +27,7 @@ const corsOptions = {
   }
 };
 
-app.use(cors(corsOptions));
+server.use(cors(corsOptions));
 server.use(express.json()); 
 
 // Sample route to test if server is running
