@@ -27,6 +27,9 @@ server.use(cors({
     },
 }));
 
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+
 // Sample route to test if server is running
 server.get('/', (req, res) => {
     res.json( 'Digital Library API is running successfully! ');
