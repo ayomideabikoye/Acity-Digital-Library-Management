@@ -17,7 +17,7 @@ const allowedOrigins = [
     'https://ayomideabikoye.github.io/Acity-Digital-Library-Frontend'
 ];
 
-app.use(cors({
+server.use(cors({
     origin: function (origin, callback) {
         // Allow requests from the defined origins or requests with no origin (like internal servers)
         if (!origin || allowedOrigins.includes(origin)) {
