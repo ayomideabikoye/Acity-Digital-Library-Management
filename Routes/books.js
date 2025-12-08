@@ -11,15 +11,18 @@ router.get('/', async (req, res) => {
 
      if (search) {
             params.push(`%${search}%`);
-            query += 'AND (title ILIKE $${params.length} OR author ILIKE $${params.length}) ';
+            query += ` AND (title ILIKE $${params.length} OR author ILIKE $${params.length}) `;
      }
         if (category) {
             params.push(category);
-            query += 'AND category = $${params.length} ';}
+            query += ` AND category = $${params.length} `;
+        }
+        
     try {
         const books = await pool.query(query, params);
         res.json(books.rows);
     } catch (err) {
+        console.error("Books Fetch Error:", err);
         res.status(500).json({ error: 'Server error fetching books.' });
     }
 });

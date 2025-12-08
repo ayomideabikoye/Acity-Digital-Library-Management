@@ -73,13 +73,27 @@ router.post('/login', async (req, res) => {
 
 router.put('/password', authenticateToken, async (req, res) => {
     const userId = req.user.user_id; 
-    const { newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body; 
 
     if (!newPassword || newPassword.length < 6) {
         return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
     }
 
+    if (!currentPassword) {
+        return res.status(400).json({ error: 'Current password is required.' });
+    }
+
     try {
+        const user = await pool.query('SELECT password_hash FROM users WHERE user_id = $1', [userId]);
+        if (user.rows.length === 0) {
+             return res.status(404).json({ error: 'User not found.' });
+        }
+        
+        const validPassword = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Invalid current password.' });
+        }
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         
         await pool.query(
