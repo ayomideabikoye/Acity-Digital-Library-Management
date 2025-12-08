@@ -14,10 +14,9 @@ const transactionRoutes = require('./Routes/transactions');
 
 const frontendURL = 'https://ayomideabikoye.github.io/Acity-Digital-Library-Frontend'; 
 
-app.use(cors({
+server.use(cors({
     origin: frontendURL,
 }));
-server.use(cors(corsOptions));
 server.use(express.json()); 
 
 // Sample route to test if server is running
