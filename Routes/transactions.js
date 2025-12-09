@@ -97,7 +97,7 @@ router.get('/my-books', authenticateToken, async (req, res) => {
                  b.author AS book_author, 
                  br.borrow_date, 
                  br.due_date, 
-                 br.return_date  -- <-- ADDED THIS FIELD
+                 br.return_date  
              FROM borrows br
              JOIN books b ON br.book_id = b.book_id
              WHERE br.user_id = $1  -- <-- REMOVED 'AND br.return_date IS NULL'
