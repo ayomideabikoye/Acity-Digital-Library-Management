@@ -1,18 +1,15 @@
-// ✅ Corrected Code for transactions.js
-
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const { authenticateToken } = require('../middleware');
 
-// --- 1. Borrow Book Route (Corrected SQL and Response)
+// Borrow Book Route 
 router.post('/borrow', authenticateToken, async (req, res) => {
     const { book_id } = req.body;
     const user_id = req.user.user_id;
 
     try {
         const checkResult = await pool.query(
-            // FIX: Corrected EXISTS typo and WHERE clause structure
             `SELECT 
                 b.available_copies, 
                 EXISTS(SELECT 1 FROM borrows WHERE user_id = $1 AND book_id = $2 AND return_date IS NULL) AS already_borrowed 
@@ -50,9 +47,9 @@ router.post('/borrow', authenticateToken, async (req, res) => {
     }
 });
 
-// --- 2. Return Book Route 
+// Return Book Route 
 router.put('/return/:borrowId', authenticateToken, async (req, res) => {
-    const borrow_id = req.params.borrowId; // FIX: Get ID from URL parameter
+    const borrow_id = req.params.borrowId; 
     const user_id = req.user.user_id;
 
     try{
