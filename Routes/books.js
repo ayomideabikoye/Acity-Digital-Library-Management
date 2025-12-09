@@ -29,17 +29,31 @@ router.get('/', async (req, res) => {
 
 router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     const { title, author, isbn, category, total_copies } = req.body; 
-    if (!title || !isbn || !total_copies) {
-        return res.status(400).json({ error: 'Missingtitle, ISBN or total copies.' }); 
+    
+    if (!title || !isbn || !category || !total_copies) {
+        return res.status(400).json({ error: 'Missing title, ISBN, category, or total copies.' }); 
     }
+    
     try {
         const newBook = await pool.query(
-            'INSERT INTO books (title, author, isbn, category, total_copies, available_copies) VALUES ($1, $2, $3, $4, $5, $5) RETURNING *',
-            [title, author, isbn, category, total_copies]
+            `INSERT INTO books 
+                (title, author, isbn, category, total_copies, available_copies) 
+             VALUES 
+                ($1, $2, $3, $4, $5, $6) 
+             RETURNING *`,
+            [
+                title, 
+                author, 
+                isbn, 
+                category, 
+                total_copies, 
+                total_copies 
+            ]
         );
         res.status(201).json(newBook.rows[0]);
     } catch (err) {
+        console.error("Book Add Error:", err); 
         res.status(500).json({ error: 'Server error adding book.' });
     }
-           });  
+});
 module.exports = router;
