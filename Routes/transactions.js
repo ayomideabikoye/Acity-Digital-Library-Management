@@ -91,18 +91,22 @@ router.get('/my-books', authenticateToken, async (req, res) => {
     const user_id = req.user.user_id;
     try {
         const borrows = await pool.query(
-            `SELECT br.borrow_id, b.title AS book_title, b.author AS book_author, br.borrow_date, br.due_date
+            `SELECT 
+                 br.borrow_id, 
+                 b.title AS book_title, 
+                 b.author AS book_author, 
+                 br.borrow_date, 
+                 br.due_date, 
+                 br.return_date  -- <-- ADDED THIS FIELD
              FROM borrows br
              JOIN books b ON br.book_id = b.book_id
-             WHERE br.user_id = $1 AND br.return_date IS NULL
-             ORDER BY br.due_date ASC`,
+             WHERE br.user_id = $1  -- <-- REMOVED 'AND br.return_date IS NULL'
+             ORDER BY br.borrow_date DESC`,
             [user_id]
         );
-
-        res.json(borrows.rows); 
+        res.json(borrows.rows);
     } catch (err) {
-        console.error("Error fetching my-books:", err);
-        res.status(500).json({ error: 'Server error fetching borrowed books.' });
+        // ... error handling
     }
 });
 
