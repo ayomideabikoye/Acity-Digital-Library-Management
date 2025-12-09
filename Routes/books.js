@@ -58,4 +58,28 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     }
 });
 
+// Delete a book
+router.delete('/:bookId', authenticateToken, requireAdmin, async (req, res) => {
+    const { bookId } = req.params;
+    
+    if (!bookId || isNaN(bookId)) {
+        return res.status(400).json({ error: 'Invalid book ID.' });
+    }
+
+    try {
+        const result = await pool.query('DELETE FROM books WHERE book_id = $1 RETURNING *', [bookId]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Book not found.' });
+        }
+        
+        res.json({ message: `Book ${bookId} deleted successfully.` });
+    } catch (err) {
+        console.error("Delete Book Error:", err);
+        if (err.code === '23503') { 
+            return res.status(400).json({ error: 'Cannot delete book: Copies are currently borrowed or records of past borrows exist.' });
+        }
+        res.status(500).json({ error: 'Server error processing delete request.' });
+    }
+});
 module.exports = router;
