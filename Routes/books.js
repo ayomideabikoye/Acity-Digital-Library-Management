@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Add new book
 router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     const { title, author, isbn, category, total_copies } = req.body; 
     
@@ -52,8 +53,9 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
         );
         res.status(201).json(newBook.rows[0]);
     } catch (err) {
-        console.error("Book Add Error:", err); 
+        console.error("Book Add Database Error:", err); 
         res.status(500).json({ error: 'Server error adding book.' });
     }
 });
+
 module.exports = router;
