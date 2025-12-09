@@ -97,17 +97,17 @@ router.get('/my-books', authenticateToken, async (req, res) => {
                  b.author AS book_author, 
                  br.borrow_date, 
                  br.due_date, 
-                 br.return_date  
+                 br.return_date 
              FROM borrows br
              JOIN books b ON br.book_id = b.book_id
-             WHERE br.user_id = $1  -- <-- REMOVED 'AND br.return_date IS NULL'
+             WHERE br.user_id = $1
              ORDER BY br.borrow_date DESC`,
             [user_id]
         );
         res.json(borrows.rows);
     } catch (err) {
-        // ... error handling
+        console.error("Fetch My Books Error:", err);
+        res.status(500).json({ error: err.message || 'Server error fetching your books.' });
     }
 });
-
 module.exports = router;
