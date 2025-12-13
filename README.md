@@ -28,7 +28,7 @@ The backend is built using **Node.js, Express, and PostgreSQL**, exposing RESTfu
 ## 🌐 Deployment Link
 
 - **Backend API (Render):**  
-  👉 `https://<your-backend-name>.onrender.com`
+  👉 `https://acity-digital-library-management-api.onrender.com`
 
 ---
 
